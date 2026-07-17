@@ -1,20 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Core networking for Gemini API calls -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <!--
-      NOTE: READ_SMS and RECEIVE_SMS are intentionally NOT requested.
-      Android 9+ classifies these as "restricted permissions" and Play Protect
-      hard-blocks installation of any sideloaded APK that requests them
-      (error: "identity theft or financial fraud risk").
+      FORCE-STRIP all SMS / Call Log permissions.
+      Some Flutter plugins (or their transitive Android deps) declare these
+      in their own manifests, and the manifest merger would otherwise include
+      them in the final APK. Google Play Protect hard-blocks installation of
+      any sideloaded APK that requests these permissions, with the misleading
+      "identity theft or financial fraud" warning — even if the app never
+      actually reads SMS.
 
-      We don't need them — the NotificationListenerService captures incoming
-      WhatsApp AND SMS messages via the notification stream, without touching
-      the SMS content provider. This keeps the install fully clean.
+      `tools:node="remove"` tells the merger to remove these permissions
+      from the final merged manifest even if a plugin requested them.
     -->
+    <uses-permission android:name="android.permission.READ_SMS" tools:node="remove" />
+    <uses-permission android:name="android.permission.RECEIVE_SMS" tools:node="remove" />
+    <uses-permission android:name="android.permission.SEND_SMS" tools:node="remove" />
+    <uses-permission android:name="android.permission.RECEIVE_MMS" tools:node="remove" />
+    <uses-permission android:name="android.permission.RECEIVE_WAP_PUSH" tools:node="remove" />
+    <uses-permission android:name="android.permission.READ_CALL_LOG" tools:node="remove" />
+    <uses-permission android:name="android.permission.WRITE_CALL_LOG" tools:node="remove" />
+    <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS" tools:node="remove" />
 
     <!-- Draw the reply bubble over WhatsApp -->
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />

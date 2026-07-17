@@ -17,7 +17,9 @@ android/gradlew.bat
 android/local.properties
 android/**/GeneratedPluginRegistrant.java
 android/key.properties
-*.jks
+**/*.jks
+**/*.keystore
+android/app/keystore/
 
 # IntelliJ / Android Studio
 .idea/

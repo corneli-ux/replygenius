@@ -17,6 +17,34 @@ if (localPropertiesFile.exists()) {
 def flutterVersionCode = localProperties.getProperty("flutter.versionCode") ?: "1"
 def flutterVersionName = localProperties.getProperty("flutter.versionName") ?: "1.0"
 
+// ─── Release signing config ───────────────────────────────────────────────
+// Reads from one of two sources:
+//   1. environment variables REPLYGENIUS_KEYSTORE_PATH / REPLYGENIUS_KEYSTORE_PASSWORD
+//      / REPLYGENIUS_KEY_ALIAS / REPLYGENIUS_KEY_PASSWORD  (used by GitHub Actions)
+//   2. android/key.properties file with keys storeFile / storePassword / keyAlias
+//      / keyPassword  (used by local builds)
+//
+// If neither is present, falls back to the debug signing config (CI dev builds).
+def keystoreProperties = new Properties()
+def keystorePropertiesFile = rootProject.file("key.properties")
+if (keystorePropertiesFile.exists()) {
+    keystorePropertiesFile.withReader("UTF-8") { reader ->
+        keystoreProperties.load(reader)
+    }
+}
+
+def envKeystorePath = System.getenv("REPLYGENIUS_KEYSTORE_PATH")
+def envKeystorePassword = System.getenv("REPLYGENIUS_KEYSTORE_PASSWORD")
+def envKeyAlias = System.getenv("REPLYGENIUS_KEY_ALIAS")
+def envKeyPassword = System.getenv("REPLYGENIUS_KEY_PASSWORD")
+
+def releaseKeystorePath = envKeystorePath ?: keystoreProperties.getProperty("storeFile")
+def releaseKeystorePassword = envKeystorePassword ?: keystoreProperties.getProperty("storePassword")
+def releaseKeyAlias = envKeyAlias ?: keystoreProperties.getProperty("keyAlias")
+def releaseKeyPassword = envKeyPassword ?: keystoreProperties.getProperty("keyPassword")
+
+def hasReleaseSigning = releaseKeystorePath != null && new File(releaseKeystorePath).exists()
+
 android {
     namespace = "com.replygenius.app"
     compileSdk = 35
@@ -41,9 +69,22 @@ android {
         versionName = flutterVersionName
     }
 
+    signingConfigs {
+        if (hasReleaseSigning) {
+            release {
+                storeFile file(releaseKeystorePath)
+                storePassword releaseKeystorePassword
+                keyAlias releaseKeyAlias
+                keyPassword releaseKeyPassword
+            }
+        }
+    }
+
     buildTypes {
         release {
-            signingConfig = signingConfigs.debug
+            // Use the real release signing config if available; otherwise
+            // fall back to debug signing so dev builds still work.
+            signingConfig = hasReleaseSigning ? signingConfigs.release : signingConfigs.debug
             minifyEnabled false
             shrinkResources false
         }

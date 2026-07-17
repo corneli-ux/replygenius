@@ -1,7 +1,7 @@
 name: replygenius
 description: AI-powered customer reply assistant that crafts calm, empathetic, skillful replies for angry customers across WhatsApp and SMS.
 publish_to: 'none'
-version: 1.0.1+2
+version: 1.0.2+3
 
 environment:
   sdk: ">=3.3.0 <4.0.0"

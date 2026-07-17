@@ -39,6 +39,19 @@ jobs:
         run: flutter analyze || true
         continue-on-error: true
 
+      # Decode the release keystore from the secret into a temp file.
+      # The build.gradle reads REPLYGENIUS_KEYSTORE_PATH env var to find it.
+      - name: Decode release keystore
+        if: ${{ secrets.KEYSTORE_BASE64 != '' }}
+        run: |
+          mkdir -p $HOME/keystore
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > $HOME/keystore/replygenius.jks
+          echo "REPLYGENIUS_KEYSTORE_PATH=$HOME/keystore/replygenius.jks" >> $GITHUB_ENV
+          echo "REPLYGENIUS_KEYSTORE_PASSWORD=${{ secrets.KEYSTORE_PASSWORD }}" >> $GITHUB_ENV
+          echo "REPLYGENIUS_KEY_ALIAS=${{ secrets.KEY_ALIAS }}" >> $GITHUB_ENV
+          echo "REPLYGENIUS_KEY_PASSWORD=${{ secrets.KEY_PASSWORD }}" >> $GITHUB_ENV
+          ls -la $HOME/keystore/
+
       - name: Build debug APK
         run: flutter build apk --debug
 
@@ -48,6 +61,12 @@ jobs:
       - name: List built APKs
         run: |
           ls -lh build/app/outputs/flutter-apk/ || true
+
+      - name: Verify release APK signature
+        run: |
+          echo "=== Release APK signature info ==="
+          $ANDROID_HOME/build-tools/35.0.0/apksigner verify --print-certs \
+            build/app/outputs/flutter-apk/app-release.apk || true
 
       - name: Upload debug APK artifact
         uses: actions/upload-artifact@v4
