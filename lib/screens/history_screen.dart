@@ -136,7 +136,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.history, size: 64, color: AppTheme.primary.withOpacity(0.4)),
+              Icon(Icons.history, size: 64, color: AppTheme.primary.withValues(alpha: 0.4)),
               const SizedBox(height: 12),
               const Text('No replies yet', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
               const SizedBox(height: 6),

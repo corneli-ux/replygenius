@@ -24,7 +24,7 @@ class NativeBridgeService {
       (data) {
         if (data is Map) {
           final msg = CustomerMessage.fromJson(
-            Map<String, dynamic>.from(data as Map),
+            Map<String, dynamic>.from(data),
           );
           _messageController.add(msg);
         }

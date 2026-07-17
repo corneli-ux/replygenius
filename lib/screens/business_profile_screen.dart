@@ -193,7 +193,7 @@ class _BusinessProfileScreenState extends State<BusinessProfileScreen> {
                     label: Text(e.value),
                     selected: e.key == value,
                     onSelected: (_) => onChanged(e.key),
-                    selectedColor: AppTheme.primary.withOpacity(0.15),
+                    selectedColor: AppTheme.primary.withValues(alpha: 0.15),
                   ))
               .toList(),
         ),

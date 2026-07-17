@@ -377,7 +377,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               label: Text(e.value),
               selected: selected,
               onSelected: (_) => onChanged(e.key),
-              selectedColor: AppTheme.primary.withOpacity(0.15),
+              selectedColor: AppTheme.primary.withValues(alpha: 0.15),
               side: BorderSide(
                 color: selected ? AppTheme.primary : const Color(0xFFCBD5E1),
               ),

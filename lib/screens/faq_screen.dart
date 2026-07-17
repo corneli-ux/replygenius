@@ -126,7 +126,7 @@ class _FaqScreenState extends State<FaqScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.quiz_outlined, size: 64, color: AppTheme.primary.withOpacity(0.4)),
+              Icon(Icons.quiz_outlined, size: 64, color: AppTheme.primary.withValues(alpha: 0.4)),
               const SizedBox(height: 12),
               const Text('No FAQs yet', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
               const SizedBox(height: 6),
