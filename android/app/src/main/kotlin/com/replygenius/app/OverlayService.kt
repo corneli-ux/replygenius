@@ -260,7 +260,7 @@ class OverlayService : Service() {
         return container
     }
 
-    private fun buildVariantRow(style: String, text: String): View {
+    private fun buildVariantRow(style: String, replyText: String): View {
         val row = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             setPadding(dp(10), dp(10), dp(10), dp(10))
@@ -285,7 +285,7 @@ class OverlayService : Service() {
         row.addView(styleLabel)
 
         val body = TextView(this).apply {
-            this.text = text
+            this.text = replyText
             setTextColor(Color.parseColor("#0F172A"))
             setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
             setLineSpacing(dp(2).toFloat(), 1f)
@@ -300,7 +300,7 @@ class OverlayService : Service() {
             gravity = Gravity.END
             setOnClickListener {
                 val clip = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                clip.setPrimaryClip(ClipData.newPlainText("ReplyGenius", text))
+                clip.setPrimaryClip(ClipData.newPlainText("ReplyGenius", replyText))
                 Toast.makeText(this@OverlayService, "Reply copied — paste in chat", Toast.LENGTH_SHORT).show()
                 hideAll()
                 stopSelf()
